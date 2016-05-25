@@ -1,24 +1,41 @@
 # encoding: utf-8
 # frozen_string_literal: true
-
 require 'spec_helper'
-require 'pry'
 
-describe RuboCop::Cop::Style::RequestReferer do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::RequestReferer, :config do
+  subject(:cop) { described_class.new(config) }
 
-  before { inspect_source(cop, 'puts request.referrer') }
+  context 'referer' do
+    before { inspect_source(cop, 'puts request.referrer') }
+    let(:cop_config) { { 'EnforcedStyle' => 'referer' } }
+    it 'registers an offense for request.referrer' do
+      expect(cop.offenses.size).to eq(1)
+    end
 
-  it 'registers an offense for request.referrer' do
-    expect(cop.offenses.size).to eq(1)
+    it 'highlights the offence' do
+      expect(cop.highlights).to eq(['request.referrer'])
+    end
+
+    it 'sends a message to the user' do
+      expect(cop.messages)
+        .to eq(['Use `request.referer` instead of `request.referrer`'])
+    end
   end
 
-  it 'highlights the offence' do
-    expect(cop.highlights).to eq(['request.referrer'])
-  end
+  context 'referrer' do
+    before { inspect_source(cop, 'puts request.referer') }
+    let(:cop_config) { { 'EnforcedStyle' => 'referrer' } }
+    it 'registers an offense for request.referer' do
+      expect(cop.offenses.size).to eq(1)
+    end
 
-  it 'sends a message to the user' do
-    expect(cop.messages)
-      .to eq(['Use `request.referer` instead of `request.referrer`'])
+    it 'highlights the offence' do
+      expect(cop.highlights).to eq(['request.referer'])
+    end
+
+    it 'sends a message to the user' do
+      expect(cop.messages)
+        .to eq(['Use `request.referrer` instead of `request.referer`'])
+    end
   end
 end
