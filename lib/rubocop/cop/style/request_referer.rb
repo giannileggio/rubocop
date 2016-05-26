@@ -9,14 +9,18 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          if offense(node)
+          if offense?(node)
             add_offense(node.source_range, node.source_range, message)
           end
         end
 
+        def autocorrect(node)
+          ->(corrector) { corrector.replace(node, "request.#{style}") }
+        end
+
         private
 
-        def offense(node)
+        def offense?(node)
           receiver = node.receiver
           node.method_name == wrong_syntax && receiver.method_name == :request
         end
