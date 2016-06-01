@@ -45,6 +45,15 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
+      context 'random spaces inside hash', :focus do
+        it 'registers offense for spaces' do
+          inspect_source(cop, '{a:  1, b: 2 }')
+          p cop.messages
+          expect(cop.messages)
+            .to eq(['Use only one space between symbol and value'])
+        end
+      end
+
       context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when symbol keys have string in them' do
           inspect_source(cop, 'x = { :"string" => 0 }')
